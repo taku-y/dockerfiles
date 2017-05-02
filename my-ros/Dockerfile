@@ -9,7 +9,7 @@ RUN apt-get update && \
     && rm -rf /var/lib/apt/lists/*
 RUN useradd -ms /bin/bash taku-y
 RUN echo taku-y:123456 | chpasswd
-
+RUN usermod -a -G root taku-y
 RUN apt-get install -y python-rosinstall
 
 USER taku-y
