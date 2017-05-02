@@ -14,8 +14,4 @@ RUN apt-get install -y python-rosinstall
 USER taku-y
 RUN echo "source /opt/ros/indigo/setup.bash" >> ~/.bashrc && \
     mkdir ~/work
-
-
-
-
-
+RUN echo "ROS_PACKAGE_PATH=/home/taku-y/work/ros:\$ROS_PACKAGE_PATH" >> ~/.bashrc
