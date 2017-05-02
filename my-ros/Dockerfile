@@ -7,7 +7,8 @@ RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y lxde-core lxterminal \
     tightvncserver language-pack-ja fonts-vlgothic \
     && rm -rf /var/lib/apt/lists/*
-RUN useradd --password taku-y -ms /bin/bash taku-y
+RUN useradd -ms /bin/bash taku-y
+RUN echo taku-y:123456 | chpasswd
 
 RUN apt-get install -y python-rosinstall
 
