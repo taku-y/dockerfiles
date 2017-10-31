@@ -1,4 +1,4 @@
-From ubuntu:16.04
+From ubuntu:14.04
 MAINTAINER Taku Yoshioka <taku.yoshioka.4096@gmail.com>
 
 USER root
@@ -36,8 +36,36 @@ RUN cd / && git clone https://github.com/pybox2d/pybox2d && \
 ENV QT_X11_NO_MITSHM=1
 
 # MuJoCo
-# RUN apt-get install -y cmake
+# RUN apt-get install -y openscenegraph
 # RUN apt-get install -y libpython2.7-dev
 # RUN cd /gps/build && cmake ../src/3rdparty && make -j4
 # ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/path/to/gps/build/lib
 # ENV PYTHONPATH=$PYTHONPATH:/path/to/gps/build/lib
+
+# vi
+RUN apt-get install -y vim
+
+# CMake
+RUN apt-get install -y cmake
+
+# lsb-core
+RUN apt-get install -y lsb-core
+
+# apt-utils
+RUN apt-get install -y apt-utils
+
+# ROS
+RUN sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
+RUN apt-key adv --keyserver hkp://ha.pool.sks-keyservers.net:80 --recv-key 421C365BD9FF1F717815A3895523BAEEB01FA116
+RUN apt-get update
+RUN apt-get install -y ros-indigo-desktop-full
+RUN apt-get install -y ros-indigo-gazebo-ros-pkgs ros-indigo-gazebo-ros-control
+RUN apt-get install -y ros-indigo-pr2-common
+RUN apt-get install -y ros-indigo-pr2-gazebo
+RUN rosdep init && rosdep update
+RUN echo "source /opt/ros/indigo/setup.bash" >> ~/.bashrc
+
+# GPS-PR2
+RUN /bin/bash -c "source /opt/ros/indigo/setup.bash && \
+    ROS_PACKAGE_PATH=/opt/ros/indigo/share:/opt/ros/indigo/stacks:/gps:/gps/src/gps_agent_pkg && \
+    cd /gps/src/gps_agent_pkg && cmake ."
