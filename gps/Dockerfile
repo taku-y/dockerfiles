@@ -62,10 +62,14 @@ RUN apt-get install -y ros-indigo-desktop-full
 RUN apt-get install -y ros-indigo-gazebo-ros-pkgs ros-indigo-gazebo-ros-control
 RUN apt-get install -y ros-indigo-pr2-common
 RUN apt-get install -y ros-indigo-pr2-gazebo
+RUN apt-get install -y ros-indigo-convex-decomposition ros-indigo-ivcon 
 RUN rosdep init && rosdep update
-RUN echo "source /opt/ros/indigo/setup.bash" >> ~/.bashrc
 
 # GPS-PR2
 RUN /bin/bash -c "source /opt/ros/indigo/setup.bash && \
     ROS_PACKAGE_PATH=/opt/ros/indigo/share:/opt/ros/indigo/stacks:/gps:/gps/src/gps_agent_pkg && \
-    cd /gps/src/gps_agent_pkg && cmake ."
+    cd /gps/src/gps_agent_pkg && cmake . && make -j4"
+
+# PATH setting
+RUN echo "source /opt/ros/indigo/setup.bash" >> ~/.bashrc && \
+    echo "ROS_PACKAGE_PATH=\$ROS_PACKAGE_PATH:/gps:/gps_agent_pkg" >> ~/.bashrc
