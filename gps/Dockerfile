@@ -72,4 +72,4 @@ RUN /bin/bash -c "source /opt/ros/indigo/setup.bash && \
 
 # PATH setting
 RUN echo "source /opt/ros/indigo/setup.bash" >> ~/.bashrc && \
-    echo "ROS_PACKAGE_PATH=\$ROS_PACKAGE_PATH:/gps:/gps_agent_pkg" >> ~/.bashrc
+    echo "ROS_PACKAGE_PATH=\$ROS_PACKAGE_PATH:/gps:/gps/src/gps_agent_pkg" >> ~/.bashrc
