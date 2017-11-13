@@ -1,3 +1,7 @@
+# Tested on
+* Ubuntu 16.04
+* Nvidia-docker
+
 # Build
 ```
 $ cd dockerfiles/gym
@@ -7,7 +11,7 @@ $ sh build.sh
 # Run
 ```
 $ cd dockerfiles/gym
-$ sh build.sh
+$ sh run.sh
 ```
 
 # Test (in docker container)
