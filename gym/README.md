@@ -17,6 +17,6 @@ $ sh run.sh
 # Test (in docker container)
 The following command run a cart pole example with graphically displaying episodes.
 ```
-$ cd /tmp/gym/examples/agents
+$ cd /tmp/github/gym/examples/agents
 $ python random_agent.py
 ```
