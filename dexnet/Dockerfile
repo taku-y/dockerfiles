@@ -23,9 +23,6 @@ RUN pip install numpy
 #RUN apt-get -y install python-numpy python-scipy python-matplotlib ipython ipython-notebook python-pandas python-sympy python-nose
 RUN apt-get -y install python-qt4
 
-# Mayavi
-#RUN pip install mayavi envisage
-
 # For PyQT
 # See https://github.com/unetbootin/unetbootin/issues/66
 ENV QT_X11_NO_MITSHM=1
@@ -43,17 +40,14 @@ RUN apt-get update && \
     apt-get -y install libxml2-dev libxslt1-dev zlib1g-dev
 RUN apt-get update && \
     apt-get -y install python-tk
-RUN mkdir /git
-#RUN cd /git && \
-#    git clone https://github.com/ndarray/Boost.NumPy && \
-#    cd Boost.NumPy && \
-#    cmake . && \
-#    make && make install
 
 # Dexnet
 RUN apt-get -y install libgeos-dev
+RUN mkdir /git
 RUN cd /git && \
-    git clone https://github.com/BerkeleyAutomation/dex-net.git
+    git clone https://github.com/BerkeleyAutomation/dex-net.git && \
+    cd /git/dex-net && \
+    git checkout custom-databases
 COPY install.sh /git/dex-net
 RUN cd /git/dex-net && \
     sh install.sh cpu python
