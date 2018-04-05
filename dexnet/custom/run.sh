@@ -3,4 +3,4 @@ nvidia-docker run -it --rm \
     --env="DISPLAY" \
     --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" \
     --volume="/home/taku-y:/taku-y" \
-    --name my_dexnet my_dexnet bash
+    --name my_dexnet_custom my_dexnet_custom bash

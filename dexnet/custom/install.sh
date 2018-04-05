@@ -92,7 +92,7 @@ python)
 	cd ..
 
 	## visualization
-        pip install visualization
+        #pip install visualization
 	#cd visualization
 	#python setup.py develop
 	#cd ..
