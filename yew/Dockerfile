@@ -59,20 +59,20 @@ RUN source /root/.cargo/env && \
     ./emsdk activate sdk-incoming-64bit
 
 # Yew requires rust nightly build
-#RUN source /root/.cargo/env && \
-#    rustup default nightly
+RUN source /root/.cargo/env && \
+    rustup default nightly
 
 # Cargo-web
-#RUN source /root/.cargo/env && \
-#    rustup target add wasm32-unknown-unknown && \
-#    cargo install cargo-web
+RUN source /root/.cargo/env && \
+    rustup target add wasm32-unknown-unknown && \
+    cargo install cargo-web
 
 # Yew
-#RUN source /root/.cargo/env && \
-#    cd /root && \
-#    git clone https://github.com/DenisKolodin/yew.git && \
-#    cd /root/yew && \
-#    cargo web build --target=wasm32-unknown-unknown
+RUN source /root/.cargo/env && \
+    cd /root && \
+    git clone https://github.com/DenisKolodin/yew.git && \
+    cd /root/yew && \
+    cargo web build --target=wasm32-unknown-unknown
 
 # Cleanup
 RUN rm -rf /var/lib/apt/lists/*
