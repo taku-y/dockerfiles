@@ -30,7 +30,7 @@ ENV SSL_VERSION=1.0.2o
 
 RUN curl https://www.openssl.org/source/openssl-$SSL_VERSION.tar.gz -O && \
     tar -xzf openssl-$SSL_VERSION.tar.gz && \
-    cd openssl-$SSL_VERSION && ./config && make depend && make install && \
+    cd openssl-$SSL_VERSION && ./config -fPIC && make depend && make install && \
     cd .. && rm -rf openssl-$SSL_VERSION*
 
 ENV OPENSSL_LIB_DIR=/usr/local/ssl/lib \
