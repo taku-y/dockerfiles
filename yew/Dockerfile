@@ -41,39 +41,21 @@ ENV OPENSSL_LIB_DIR=/usr/local/ssl/lib \
     OPENSSL_INCLUDE_DIR=/usr/local/ssl/include \
     OPENSSL_STATIC=1
 
-# install toolchain
+# rustup
 RUN curl https://sh.rustup.rs -sSf | \
     sh -s -- --default-toolchain stable -y
 
-ENV PATH=/root/.cargo/bin:$PATH
-
-# emscripten
+# yew
 RUN source /root/.cargo/env && \
-    rustup target add wasm32-unknown-emscripten 
-RUN cd /root && \
-    curl https://s3.amazonaws.com/mozilla-games/emscripten/releases/emsdk-portable.tar.gz | tar -zxv -C ~/
-RUN source /root/.cargo/env && \
-    cd /root/emsdk-portable && \
-    ./emsdk update && \
-    ./emsdk install sdk-incoming-64bit && \
-    ./emsdk activate sdk-incoming-64bit
-
-# Yew requires rust nightly build
-RUN source /root/.cargo/env && \
-    rustup default nightly
-
-# Cargo-web
-RUN source /root/.cargo/env && \
-    rustup target add wasm32-unknown-unknown && \
+    rustup default nightly && \
     cargo install cargo-web
-
-# Yew
-RUN source /root/.cargo/env && \
-    cd /root && \
+RUN cd /root && \
     git clone https://github.com/DenisKolodin/yew.git && \
-    cd /root/yew && \
-    cargo web build --target=wasm32-unknown-unknown
+    cd yew && \
+    git checkout -b tmp tags/0.4.0
 
 # Cleanup
 RUN rm -rf /var/lib/apt/lists/*
 
+RUN echo "source /root/.cargo/env" >> /root/.bashrc
+RUN echo "alias startyew='cargo web start --target=wasm32-unknown-unknown --host=0.0.0.0'" >> /root/.bashrc
