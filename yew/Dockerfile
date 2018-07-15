@@ -50,9 +50,7 @@ RUN source /root/.cargo/env && \
     rustup default nightly && \
     cargo install cargo-web
 RUN cd /root && \
-    git clone https://github.com/DenisKolodin/yew.git && \
-    cd yew && \
-    git checkout -b tmp tags/0.4.0
+    git clone https://github.com/DenisKolodin/yew.git
 
 # Cleanup
 RUN rm -rf /var/lib/apt/lists/*
