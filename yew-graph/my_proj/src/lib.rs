@@ -1,3 +1,5 @@
+#![recursion_limit="256"]
+
 #[macro_use]
 extern crate yew;
 
@@ -33,12 +35,27 @@ impl Component for Model {
         body.append_child(&canvas);
 
         js! {
-        const canvas = document.querySelector("canvas");
-        canvas.width = 100;
-        canvas.height = 100;
-        const ctx = canvas.getContext("2d");
-        ctx.fillStyle = "green";
-        ctx.fillRect(10, 10, 50, 50);
+            line = new RGraph.Line({
+                id:"cvs",
+                data: [
+                    [5,2,10,3,5,4,5,5,2.5,6],
+                    [3,1,7,5,10,6,4,4,2,1]
+                ],
+                options: {
+                    colors: ["red", "white"],
+                    backgroundGrid: false,
+                    axisColor: "#ccc",
+                    textColor: "#ccc",
+                    tickmarks: "filledcircle",
+                    tickmarksSize: 50,
+                    linewidth:3 ,
+                    labels: ["2008","2009","2010","2011","2012","2013","2014","2015","2016","2017"],
+                    gutterLeft: 50,
+                    gutterRight: 50,
+                    gutterTop: 50,
+                    gutterBottom: 50,
+                },
+            }).trace();
         };
 
         match msg {

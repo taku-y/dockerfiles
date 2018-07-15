@@ -10,19 +10,6 @@ use my_proj::Model;
 fn main() {
     yew::initialize();
     let body = document().query_selector("body").unwrap().unwrap();
-//
-//    // This canvas won't be overwritten by yew!
-//    let canvas = document().create_element("canvas").unwrap();
-//    body.append_child(&canvas);
-//
-//    js! {
-//        const canvas = document.querySelector("canvas");
-//        canvas.width = 100;
-//        canvas.height = 100;
-//        const ctx = canvas.getContext("2d");
-//        ctx.fillStyle = "green";
-//        ctx.fillRect(10, 10, 50, 50);
-//    };
 
     let mount_class = "mount-point";
     let mount_point = document().create_element("div").unwrap();
