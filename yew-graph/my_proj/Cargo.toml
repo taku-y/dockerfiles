@@ -1,0 +1,8 @@
+[package]
+name = "my_proj"
+version = "0.1.0"
+authors = ["A <a@a.com>"]
+
+[dependencies]
+stdweb = "0.4"
+yew = { path = "../yew" }
