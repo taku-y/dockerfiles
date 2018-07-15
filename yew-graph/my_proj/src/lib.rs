@@ -29,6 +29,7 @@ impl Component for Model {
 
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
         let body = document().query_selector("body").unwrap().unwrap();
+        let labels = vec!["2008","2009","2010","2011","2012","2013","2014","2015","2016","2017"];
 
         // This canvas won't be overwritten by yew!
         let canvas = document().create_element("canvas").unwrap();
@@ -49,7 +50,7 @@ impl Component for Model {
                     tickmarks: "filledcircle",
                     tickmarksSize: 50,
                     linewidth:3 ,
-                    labels: ["2008","2009","2010","2011","2012","2013","2014","2015","2016","2017"],
+                    labels: @{labels},
                     gutterLeft: 50,
                     gutterRight: 50,
                     gutterTop: 50,
