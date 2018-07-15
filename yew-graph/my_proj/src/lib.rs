@@ -30,6 +30,9 @@ impl Component for Model {
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
         let body = document().query_selector("body").unwrap().unwrap();
         let labels = vec!["2008","2009","2010","2011","2012","2013","2014","2015","2016","2017"];
+        let xs = vec![5.0, 2.0, 10.0, 3.0, 5.0, 4.0, 5.0, 5.0, 2.5, 6.0];
+        let ys = vec![3.0, 1.0, 7.0, 5.0, 10.0, 6.0, 4.0, 4.0, 2.0, 1.0];
+        let data = vec![xs, ys];
 
         // This canvas won't be overwritten by yew!
         let canvas = document().create_element("canvas").unwrap();
@@ -38,10 +41,7 @@ impl Component for Model {
         js! {
             line = new RGraph.Line({
                 id:"cvs",
-                data: [
-                    [5,2,10,3,5,4,5,5,2.5,6],
-                    [3,1,7,5,10,6,4,4,2,1]
-                ],
+                data: @{data},
                 options: {
                     colors: ["red", "white"],
                     backgroundGrid: false,
