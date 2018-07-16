@@ -8,3 +8,5 @@ $ cd ~/yew/example/counter
 # 'startyew' is just an alias, see Dockerfile
 $ startyew
 ```
+
+TODO: learn the mechanism of dynamic update of plots in training process of tensorboard
