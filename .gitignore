@@ -1,2 +1,3 @@
 *.zip
 */.idea/*
+.bash_history
