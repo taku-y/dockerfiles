@@ -1,0 +1,7 @@
+[package]
+name = "hello_world"
+version = "0.1.0"
+authors = ["root"]
+
+[dependencies]
+primitiv = { version = "0.3.0", path = "/root/primitiv-rust" }

@@ -77,3 +77,5 @@ RUN cd ~/ && \
     git clone --branch develop https://github.com/primitiv/primitiv-rust/ && \
     cd primitiv-rust && \
     cargo build
+
+ENV USER=root
