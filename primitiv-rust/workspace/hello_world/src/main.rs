@@ -31,15 +31,18 @@ impl<'a> Model<'a> {
     fn new() -> Self {
         Model {
             samples: HashMap::new(),
-            logp: I::Constant::new(0.0),
+            logp: Node::Constant(0.0),
         }
     }
 
     fn get_sample(&self, name: &str) -> &Node {
-        self.samples.get(name)?
+        match self.samples.get(name) {
+            Some(sample) => sample,
+            _ => panic!("Sample of {} not found", name)
+        }
     }
 
-    fn add_sample(&self, name: &str, sample: Node) {
+    fn add_sample(&self, name: &'a str, sample: Node) {
         self.samples.insert(name, sample);
     }
 }
@@ -47,11 +50,11 @@ impl<'a> Model<'a> {
 trait Distribution {
     fn name(&self) -> &str;
 
-    fn logp(&self, sample: &Node) -> &Node;
+    fn logp(&self, sample: &Node) -> Node;
 
     fn sample(&self) -> Node;
 
-    fn process(&self, model: &mut Model, mode: ProcessMode) -> &Node {
+    fn process<'a>(&self, model: &'a mut Model, mode: ProcessMode) -> &'a Node {
         match mode {
             ProcessMode::SAMPLE => {
                 let sample = self.sample();
@@ -59,8 +62,9 @@ trait Distribution {
                 model.get_sample(self.name())
             }
             ProcessMode::LOGP => {
-                let sample = model.get_samples(self.name());
-                self.logp(sample)
+                let sample = model.get_sample(self.name());
+                model.logp = model.logp + self.logp(sample);
+                &sample
             }
         }
     }
@@ -87,13 +91,13 @@ impl<'a> Distribution for Normal<'a> {
         self.name
     }
 
-    fn logp(&self, sample: &Node) -> &Node {
+    fn logp(&self, sample: &Node) -> Node {
         let diff = sample - &(self.mean);
         let diff2 = (&diff * &diff);
         let logp1 = -F::log(F::constant([], 2.0 * PI) * &(self.std));
         let logp2: Node = -0.5 * &diff2;
 
-        let logp3 = logp1 + logp2;
+        logp1 + logp2
         //let logp4 = -F::log(F::constant([], 2.0 * PI) * &std) - F::constant([], 0.5) * diff2;
     }
 
@@ -123,7 +127,7 @@ fn main() {
         let lstd = F::parameter(&mut p_lstd);
         let std = F::exp(lstd);
 
-        let x = Normal::draw("w", mean, F::exp(lstd)).process(&mut model, mode);
+        let x = Normal::new("w", mean, F::exp(lstd)).process(model, mode);
     };
 
     // Inference loop
