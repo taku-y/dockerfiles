@@ -16,28 +16,63 @@ use primitiv::optimizers as O;
 use std::f32::consts::PI as PI;
 use std::ops::Mul;
 
-#[derive(Debug)]
-struct Model {
-    samples: HashMap<String, Node>
+enum ProcessMode {
+    LOGP,
+    SAMPLE,
 }
 
-impl Model {
+#[derive(Debug)]
+struct Model<'a> {
+    pub samples: HashMap<&'a str, Node>,
+    pub logp: Node
+}
+
+impl<'a> Model<'a> {
     fn new() -> Self {
         Model {
             samples: HashMap::new(),
+            logp: I::Constant::new(0.0),
         }
     }
 
-    fn draw_samples(&mut self, d: &mut Distribution) -> &Node {
-        let samples = d.draw_samples();
-        self.samples.insert(d.name().clone().to_string(), samples);
-        &(self.samples.get(d.name()).unwrap())
+    fn get_sample(&self, name: &str) -> &Node {
+        self.samples.get(name)?
+    }
+
+    fn add_sample(&self, name: &str, sample: Node) {
+        self.samples.insert(name, sample);
     }
 }
 
-struct Normal {}
+trait Distribution {
+    fn name(&self) -> &str;
 
-impl Normal {
+    fn logp(&self, sample: &Node) -> &Node;
+
+    fn sample(&self) -> Node;
+
+    fn process(&self, model: &mut Model, mode: ProcessMode) -> &Node {
+        match mode {
+            ProcessMode::SAMPLE => {
+                let sample = self.sample();
+                model.add_sample(self.name(), sample);
+                model.get_sample(self.name())
+            }
+            ProcessMode::LOGP => {
+                let sample = model.get_samples(self.name());
+                self.logp(sample)
+            }
+        }
+    }
+}
+
+struct Normal<'a> {
+    name: &'a str,
+    mean: Node,
+    std: Node,
+}
+
+impl<'a> Normal<'a> {
     fn new(name: &'a str, mean: Node, std: Node) -> Self {
         Normal {
             name: name,
@@ -47,12 +82,24 @@ impl Normal {
     }
 }
 
-impl Distribution {
-    fn proc(&self, m: &mut Model) -> & Node {
-        match m.mode {
-            Mode::sample => {}
-            Mode::logp => {}
-        }
+impl<'a> Distribution for Normal<'a> {
+    fn name(&self) -> &str {
+        self.name
+    }
+
+    fn logp(&self, sample: &Node) -> &Node {
+        let diff = sample - &(self.mean);
+        let diff2 = (&diff * &diff);
+        let logp1 = -F::log(F::constant([], 2.0 * PI) * &(self.std));
+        let logp2: Node = -0.5 * &diff2;
+
+        let logp3 = logp1 + logp2;
+        //let logp4 = -F::log(F::constant([], 2.0 * PI) * &std) - F::constant([], 0.5) * diff2;
+    }
+
+    fn sample(&self) -> Node {
+        let sample = R::normal(([2], 3), 0.0, 1.0);
+        F::matmul(sample, &self.std) + &self.mean
     }
 }
 
@@ -69,17 +116,14 @@ fn main() {
     let mut g = Graph::new();
     Graph::set_default(&mut g);
 
-    // Generative model
-    let mut m = Model::new();
-
     // Variational distribution
-    let draw_samples = | m: &mut Model | {
+    let guide = | model: &mut Model, mode: ProcessMode | {
         //  Parameter nodes
         let mean = F::parameter(&mut p_mean);
         let lstd = F::parameter(&mut p_lstd);
         let std = F::exp(lstd);
 
-        let x = Normal::draw("w", mean, F::exp(lstd)).proc(m);
+        let x = Normal::draw("w", mean, F::exp(lstd)).process(&mut model, mode);
     };
 
     // Inference loop
@@ -87,9 +131,9 @@ fn main() {
     {
         g.clear();
 
-        draw_samples(&mut m);
-
-        println!("{:?}", m);
+        // Generative model
+        let mut model = Model::new();
+        guide(&mut model, ProcessMode::SAMPLE);
     }
 }
 
