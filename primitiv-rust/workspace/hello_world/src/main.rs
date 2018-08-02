@@ -3,7 +3,7 @@ extern crate primitiv;
 use std::collections::HashMap;
 
 use primitiv::Graph;
-use primitiv::Optimizer;
+//use primitiv::Optimizer;
 use primitiv::Parameter;
 use primitiv::Node;
 
@@ -11,10 +11,10 @@ use primitiv::devices as D;
 use primitiv::initializers as I;
 use primitiv::node_functions as F;
 use primitiv::node_functions::random as R;
-use primitiv::optimizers as O;
+// use primitiv::optimizers as O;
 
 use std::f32::consts::PI as PI;
-use std::ops::Mul;
+//use std::ops::Mul;
 
 enum ProcessMode {
     LOGP,
@@ -31,69 +31,65 @@ impl<'a> Model<'a> {
     fn new() -> Self {
         Model {
             samples: HashMap::new(),
-            logp: Node::Constant(0.0),
+            logp: F::constant([], 0.0),
         }
     }
 
     fn get_sample(&self, name: &str) -> &Node {
         match self.samples.get(name) {
             Some(sample) => sample,
-            _ => panic!("Sample of {} not found", name)
+            _ => panic!("Sample of RV '{}' not found", name)
         }
     }
 
-    fn add_sample(&self, name: &'a str, sample: Node) {
+    fn add_sample(&mut self, name: &'a str, sample: Node) {
         self.samples.insert(name, sample);
     }
-}
 
-trait Distribution {
-    fn name(&self) -> &str;
-
-    fn logp(&self, sample: &Node) -> Node;
-
-    fn sample(&self) -> Node;
-
-    fn process<'a>(&self, model: &'a mut Model, mode: ProcessMode) -> &'a Node {
+    fn process<'b>(&mut self, name: &'a str, dist: &'b (Distribution + 'b),
+                   mode: ProcessMode) -> &Node {
         match mode {
             ProcessMode::SAMPLE => {
-                let sample = self.sample();
-                model.add_sample(self.name(), sample);
-                model.get_sample(self.name())
+                let sample = dist.sample();
+                self.add_sample(name, sample);
+                self.get_sample(name)
             }
             ProcessMode::LOGP => {
-                let sample = model.get_sample(self.name());
-                model.logp = model.logp + self.logp(sample);
+                let sample = match self.samples.get(name) {
+                    Some(sample) => sample,
+                    _ => panic!("Sample of RV '{}' not found", name),
+                };
+                let logp = &(self.logp) + dist.logp(sample);
+                self.logp = logp;
                 &sample
             }
         }
     }
 }
 
-struct Normal<'a> {
-    name: &'a str,
+trait Distribution {
+    fn logp(&self, sample: &Node) -> Node;
+    fn sample(&self) -> Node;
+}
+
+struct Normal {
     mean: Node,
     std: Node,
 }
 
-impl<'a> Normal<'a> {
-    fn new(name: &'a str, mean: Node, std: Node) -> Self {
+impl Normal {
+    fn new(mean: Node, std: Node) -> Self {
         Normal {
-            name: name,
             mean: mean,
             std: std
         }
     }
 }
 
-impl<'a> Distribution for Normal<'a> {
-    fn name(&self) -> &str {
-        self.name
-    }
-
+impl Distribution for Normal {
     fn logp(&self, sample: &Node) -> Node {
         let diff = sample - &(self.mean);
-        let diff2 = (&diff * &diff);
+        let diff2 = &diff * &diff;
         let logp1 = -F::log(F::constant([], 2.0 * PI) * &(self.std));
         let logp2: Node = -0.5 * &diff2;
 
@@ -121,13 +117,15 @@ fn main() {
     Graph::set_default(&mut g);
 
     // Variational distribution
-    let guide = | model: &mut Model, mode: ProcessMode | {
+    let mut guide = | model: &mut Model, mode: ProcessMode | {
         //  Parameter nodes
         let mean = F::parameter(&mut p_mean);
         let lstd = F::parameter(&mut p_lstd);
         let std = F::exp(lstd);
 
-        let x = Normal::new("w", mean, F::exp(lstd)).process(model, mode);
+        let _x = model.process(
+            "w", &Normal::new(mean, std), mode
+        );
     };
 
     // Inference loop
@@ -138,6 +136,9 @@ fn main() {
         // Generative model
         let mut model = Model::new();
         guide(&mut model, ProcessMode::SAMPLE);
+        guide(&mut model, ProcessMode::LOGP);
+
+        println!("logp = {:?}", model.logp.to_vector());
     }
 }
 
