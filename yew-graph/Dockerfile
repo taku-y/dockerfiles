@@ -62,7 +62,7 @@ RUN apt-get update && \
 RUN /bin/bash -c 'source ~/.nvm/nvm.sh && nvm install 8.9.4 && nvm alias default 8.9.4'
 
 # Plotly
-RUN /bin/bash -c 'source ~/.nvm/nvm.sh && npm install -g plotly'
+RUN /bin/bash -c 'source ~/.nvm/nvm.sh && npm install -g plotly.js-dist'
 
 # Cleanup
 RUN rm -rf /var/lib/apt/lists/*
