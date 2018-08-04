@@ -41,7 +41,6 @@ ENV OPENSSL_LIB_DIR=/usr/local/ssl/lib \
     OPENSSL_INCLUDE_DIR=/usr/local/ssl/include \
     OPENSSL_STATIC=1
 
-# rustup
 RUN curl https://sh.rustup.rs -sSf | \
     sh -s -- --default-toolchain stable -y
 
@@ -50,11 +49,20 @@ RUN source /root/.cargo/env && \
     rustup default nightly && \
     cargo install cargo-web
 RUN cd /root && \
-    git clone https://github.com/DenisKolodin/yew.git 
+    git clone https://github.com/DenisKolodin/yew.git
 
-# https://www.rgraph.net/
-COPY RGraph4.66-stable.zip /root
-RUN apt-get install -y unzip
+# nvm
+RUN apt-get update && \
+    apt-get install build-essential libssl-dev && \
+    cd /tmp && \
+    curl -sL https://raw.githubusercontent.com/creationix/nvm/v0.33.8/install.sh -o install_nvm.sh && \
+    bash install_nvm.sh
+
+# node.js
+RUN /bin/bash -c 'source ~/.nvm/nvm.sh && nvm install 8.9.4 && nvm alias default 8.9.4'
+
+# Plotly
+RUN /bin/bash -c 'source ~/.nvm/nvm.sh && npm install -g plotly'
 
 # Cleanup
 RUN rm -rf /var/lib/apt/lists/*
