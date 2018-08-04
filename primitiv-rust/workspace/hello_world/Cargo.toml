@@ -1,7 +1,11 @@
 [package]
 name = "hello_world"
 version = "0.1.0"
-authors = ["root"]
+authors = ["Taku Yoshioka <taku.yoshioka.4096@gmail.com>"]
 
 [dependencies]
+rand = "0.5.4"
 primitiv = { version = "0.3.0", path = "/root/primitiv-rust" }
+
+[[example]]
+name = "example1"
