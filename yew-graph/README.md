@@ -3,10 +3,8 @@ $ sh build.sh
 $ sh run.sh
 
 # In container
-$ cd ~/yew/example/counter
-# Below is equivalent to 'cargo web start --target=wasm32-unknown-unknown --host=0.0.0.0'
-# 'startyew' is just an alias, see Dockerfile
-$ startyew
+$ cd ~/my_proj/static
+$ npm install plotly.js-dist
+$ cd ~/my_ploj
+$ sy
 ```
-
-TODO: learn the mechanism of dynamic update of plots in training process of tensorboard
