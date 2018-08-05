@@ -90,8 +90,8 @@ impl Distribution for Normal {
     fn logp(&self, sample: &Node) -> Node {
         let diff = sample - &(self.mean);
         let diff2 = &diff * &diff;
-        let logp1 = -F::log(F::constant([], 2.0 * PI) * &(self.std));
-        let logp2: Node = -0.5 * &diff2;
+        let logp1 = -0.5 * F::log(F::constant([], 2.0 * PI) * &(self.std) * &(self.std));
+        let logp2: Node = -0.5 / (&(self.std) * &(self.std)) * &diff2;
 
         logp1 + logp2
         //let logp4 = -F::log(F::constant([], 2.0 * PI) * &std) - F::constant([], 0.5) * diff2;
