@@ -25,9 +25,10 @@ use hello_world::{Model, ProcessMode, Normal};
 
 fn main() {
     // Create sample data
+    let n_samples = 10;
     let n = NormalInRand::new(-3.5, 1.0);
     let mut rng = rand::thread_rng();
-    let data = (0..100).map(|_| n.sample(&mut rng) as f32).collect::<Vec<_>>();
+    let data = (0..n_samples).map(|_| n.sample(&mut rng) as f32).collect::<Vec<_>>();
 
     // Device for primitiv
     let mut dev = D::Naive::new();
@@ -49,7 +50,7 @@ fn main() {
         let std = F::exp(lstd);
 
         let _x = model.process(
-            "w", &Normal::new(mean, std), mode
+            "x", &Normal::new(mean, std), mode
         );
     };
 
@@ -60,7 +61,8 @@ fn main() {
 
         // Generative model
         let mut model = Model::new();
-        guide(&mut model, ProcessMode::SAMPLE);
+        model.add_sample("x", F::input(([], n_samples), &data));
+        // guide(&mut model, ProcessMode::SAMPLE);
         guide(&mut model, ProcessMode::LOGP);
 
         println!("logp = {:?}", model.logp.to_vector());

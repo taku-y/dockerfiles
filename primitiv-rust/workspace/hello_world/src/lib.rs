@@ -35,14 +35,14 @@ impl<'a> Model<'a> {
         }
     }
 
-    fn get_sample(&self, name: &str) -> &Node {
+    pub fn get_sample(&self, name: &str) -> &Node {
         match self.samples.get(name) {
             Some(sample) => sample,
             _ => panic!("Sample of RV '{}' not found", name)
         }
     }
 
-    fn add_sample(&mut self, name: &'a str, sample: Node) {
+    pub fn add_sample(&mut self, name: &'a str, sample: Node) {
         self.samples.insert(name, sample);
     }
 
