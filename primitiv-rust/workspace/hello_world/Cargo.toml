@@ -14,4 +14,7 @@ name = "example1"
 name = "example2"
 
 [[example]]
+name = "example3"
+
+[[example]]
 name = "test"
