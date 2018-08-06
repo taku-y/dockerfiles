@@ -2,27 +2,19 @@ extern crate rand;
 extern crate primitiv;
 extern crate hello_world;
 
-use std::collections::HashMap;
-
 use rand::distributions::Distribution;
 use rand::distributions::normal::Normal as NormalInRand;
 
 use primitiv::Graph;
 use primitiv::Optimizer;
 use primitiv::Parameter;
-use primitiv::Node;
 
 use primitiv::devices as D;
 use primitiv::initializers as I;
 use primitiv::node_functions as F;
-use primitiv::node_functions::random as R;
 use primitiv::optimizers as O;
 
-use std::f32::consts::PI as PI;
-//use std::f32::exp;
-//use std::ops::Mul;
-
-use hello_world::{Model, ProcessMode, Normal};
+use hello_world::{RandomVarManager, ProcessMode, Normal};
 
 fn main() {
     // Create sample data
@@ -49,14 +41,14 @@ fn main() {
     Graph::set_default(&mut g);
 
     {
-        // Variational distribution
-        let mut guide = |model: &mut Model, mode: ProcessMode| {
+        // Normal distribution
+        let mut model = |rvm: &mut RandomVarManager, mode: ProcessMode| {
             //  Parameter nodes
             let mean = F::parameter(&mut p_mean);
             let lstd = F::parameter(&mut p_lstd);
             let std = F::exp(lstd);
 
-            let _x = model.process("x", &Normal::new(mean, std), mode);
+            let _x = rvm.process("x", &Normal::new(mean, std), mode);
         };
 
         // Inference loop
@@ -65,13 +57,13 @@ fn main() {
             g.clear();
 
             // Generative model
-            let mut model = Model::new();
-            model.add_sample("x", F::input(([], n_samples), &data));
-            // guide(&mut model, ProcessMode::SAMPLE);
-            guide(&mut model, ProcessMode::LOGP);
+            let mut rvm = RandomVarManager::new();
+            rvm.add_sample("x", F::input(([], n_samples), &data));
+            // model(&mut model, ProcessMode::SAMPLE);
+            model(&mut rvm, ProcessMode::LOGP);
 
             // Objective function
-            let nlogp = -F::batch::mean(&(model.logp));
+            let nlogp = -F::batch::mean(&(rvm.logp));
 
             println!("nlogp = {:?}", nlogp.to_float());
 

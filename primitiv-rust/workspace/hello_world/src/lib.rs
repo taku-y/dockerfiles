@@ -2,19 +2,12 @@ extern crate primitiv;
 
 use std::collections::HashMap;
 
-use primitiv::Graph;
-//use primitiv::Optimizer;
-use primitiv::Parameter;
 use primitiv::Node;
 
-use primitiv::devices as D;
-use primitiv::initializers as I;
 use primitiv::node_functions as F;
 use primitiv::node_functions::random as R;
-// use primitiv::optimizers as O;
 
 use std::f32::consts::PI as PI;
-//use std::ops::Mul;
 
 pub enum ProcessMode {
     LOGP,
@@ -22,14 +15,14 @@ pub enum ProcessMode {
 }
 
 #[derive(Debug)]
-pub struct Model<'a> {
+pub struct RandomVarManager<'a> {
     pub samples: HashMap<&'a str, Node>,
     pub logp: Node
 }
 
-impl<'a> Model<'a> {
+impl<'a> RandomVarManager<'a> {
     pub fn new() -> Self {
-        Model {
+        RandomVarManager {
             samples: HashMap::new(),
             logp: F::constant([], 0.0),
         }
