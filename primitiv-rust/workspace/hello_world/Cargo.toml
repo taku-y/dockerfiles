@@ -9,3 +9,9 @@ primitiv = { version = "0.3.0", path = "/root/primitiv-rust" }
 
 [[example]]
 name = "example1"
+
+[[example]]
+name = "example2"
+
+[[example]]
+name = "test"
