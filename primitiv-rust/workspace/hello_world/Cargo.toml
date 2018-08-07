@@ -18,3 +18,6 @@ name = "example3"
 
 [[example]]
 name = "test"
+
+[[example]]
+name = "test_broadcast"
