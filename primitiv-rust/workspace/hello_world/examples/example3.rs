@@ -51,7 +51,22 @@ fn main() {
     Graph::set_default(&mut g);
 
     {
-        // Normal distribution
+        // Bayesian linear regression
+        let mut model =
+            |xs: &[f32], rvm: &mut RandomVarManager, mode: ProcessMode|
+        {
+            let w_m = F::parameter(&mut p_w_m);
+            let w_s = F::exp(F::parameter(&mut p_w_l));
+            let b_m = F::parameter(&mut p_b_m);
+            let b_s = F::exp(F::parameter(&mut p_b_l));
+
+            let w = rvm.process("w", &Normal::new(0.0, 1.0), mode);
+            let b = rvm.process("b", &Normal::new(0.0, 1.0), mode);
+            let ys_pred = w * xs + b;
+            let y = rvm.process("y", &Normal::new(ys_pred, 0.1));
+        };
+
+        // Variational distribution
         let mut vdist =
             |xs: &[f32], rvm: &mut RandomVarManager, mode: ProcessMode|
         {
