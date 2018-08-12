@@ -14,7 +14,78 @@ use primitiv::initializers as I;
 use primitiv::node_functions as F;
 use primitiv::optimizers as O;
 
-use hello_world::{RandomVarManager, ProcessMode, Normal};
+use hello_world::{RandomVarManager, ProcessMode, Normal, new_rng, shuffle};
+
+trait MiniBatchedDataset {
+    type MiniBatch;
+    fn take_minibatch(&self, ixs: &Vec<usize>) -> MiniBatch;
+    fn len(&self) -> usize;
+}
+
+struct MinibatchIterator<'a> {
+    count: usize,
+    minibatch_size: usize,
+    ixs: Vec<usize>,
+    dataset: &MinibatchedDataset,
+}
+
+impl MinibatchIterator {
+    pub fn new(minibatch_size: usize, dataset: &MinibatchedDataset, seed0: u8)
+        -> MinibatchIterator
+    {
+        let n_samples = dataset.len();
+        let rng = new_rng(seed0);
+        ixs = shuffle(n_samples, rng);
+
+        MinibatchIterator {
+            count: 0,
+            minibatch_size: minibatch_size,
+            ixs: ixs,
+            dataset: dataset
+        }
+    }
+}
+
+impl Iterator for MinibatchIterator {
+
+}
+
+struct MyMiniBatch<'a> {
+    xs: &'a [f32],
+    ys: &'a [f32]
+}
+
+struct MyDataSet<'a> {
+    xs_all: &'a [f32],
+    ys_all: &'a [f32],
+}
+
+impl MyDataSet {
+    pub fn new(xs_all: &[f32], ys_all: &[f32]) -> Self {
+        // TODO: assert len(xs_all) == len(ys_all)
+        MyDataSet {
+            xs_all: xs_all,
+            ys_all: ys_all,
+        }
+    }
+}
+
+impl<'a> MinibatchedDataset for MyDataSet<'a> {
+    type MiniBatch = MyMiniBatch<'a>;
+
+    fn take_minibatch(&self, ixs: &Vec<usize>) -> MiniBatch {
+        MiniBatch {
+            xs: ixs.clone().into_iter().
+                map(|ix| self.xs_all[ix]).collect::<Vec<_>>(),
+            ys: ixs.clone().into_iter().
+                map(|ix| self.ys_all[ix]).collect::<Vec<_>>(),
+        }
+    }
+
+    fn len(&self) {
+        self.xs_all.len()
+    }
+}
 
 fn main() {
     // Create sample data from a linear regression model
@@ -51,9 +122,9 @@ fn main() {
     Graph::set_default(&mut g);
 
     {
-        // Bayesian linear regression
+        // Bayesian linear regression model
         let mut model =
-            |xs: &[f32], rvm: &mut RandomVarManager, mode: ProcessMode|
+            |mb, rvm: &mut RandomVarManager, mode: ProcessMode|
         {
             let w_m = F::parameter(&mut p_w_m);
             let w_s = F::exp(F::parameter(&mut p_w_l));
@@ -63,12 +134,12 @@ fn main() {
             let w = rvm.process("w", &Normal::new(0.0, 1.0), mode);
             let b = rvm.process("b", &Normal::new(0.0, 1.0), mode);
             let ys_pred = w * xs + b;
-            let y = rvm.process("y", &Normal::new(ys_pred, 0.1));
+            let _ = rvm.process("y", &Normal::new(ys_pred, 0.1));
         };
 
         // Variational distribution
         let mut vdist =
-            |xs: &[f32], rvm: &mut RandomVarManager, mode: ProcessMode|
+            |rvm: &mut RandomVarManager, mode: ProcessMode|
         {
             let w_m = F::parameter(&mut p_w_m);
             let w_s = F::exp(F::parameter(&mut p_w_l));

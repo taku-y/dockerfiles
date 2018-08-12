@@ -21,3 +21,9 @@ name = "test"
 
 [[example]]
 name = "test_broadcast"
+
+[[example]]
+name = "test_rand"
+
+[[example]]
+name = "test_minibatch"
