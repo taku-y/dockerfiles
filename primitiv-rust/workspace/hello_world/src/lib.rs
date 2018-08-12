@@ -1,13 +1,16 @@
+extern crate rand;
 extern crate primitiv;
 
 use std::collections::HashMap;
+use std::f32::consts::PI as PI;
+
+//use rand::{Rng, SeedableRng, StdRng};
 
 use primitiv::Node;
-
 use primitiv::node_functions as F;
 use primitiv::node_functions::random as R;
 
-use std::f32::consts::PI as PI;
+pub mod utils;
 
 pub enum ProcessMode {
     LOGP,
