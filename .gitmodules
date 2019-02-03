@@ -1,0 +1,3 @@
+[submodule "learn-pp-rust/learn-pp-rust"]
+	path = learn-pp-rust/learn-pp-rust
+	url = https://github.com/taku-y/learn-pp-rust.git
