@@ -1,6 +1,8 @@
 *.zip
 .idea
 .bash_history
-
 *.sublime-project
 *.sublime-workspace
+*.vscode
+sftp-config.json
+sftp.json
