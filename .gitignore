@@ -1,3 +1,6 @@
 *.zip
 .idea
 .bash_history
+
+*.sublime-project
+*.sublime-workspace
