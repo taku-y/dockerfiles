@@ -56,6 +56,9 @@ RUN cd /root && \
 ENV PRIMITIV_LIBRARY_DIR=/usr/local/lib
 ENV LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
 
+# tch-rs, libtorch binding for Rust
+ENV LD_LIBRARY_PATH=/root/libtorch/lib:$LD_LIBRARY_PATH
+
 ENV PATH=/root/.cargo/bin:$PATH
 ENV USER=root
 WORKDIR /root
