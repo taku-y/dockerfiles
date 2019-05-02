@@ -33,6 +33,7 @@ class WikipediaIterator:
                             s = neologdn.normalize(s)
                             s = re.sub(r'[!-/:-@[-`{-~]', r' ', s)
                             s = re.sub(u'[■-♯]', ' ', s)
+                            s = re.sub(r'(\d)([,.])(\d+)', r'\1\3', s)
                             s = re.sub(r'\d+', '0', s)
 
                             # Split sentense into tokens
