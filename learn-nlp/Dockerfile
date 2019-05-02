@@ -40,6 +40,11 @@ RUN apt-get update && apt-get -y install sudo
 RUN cd /root/mecab-ipadic-neologd && \
     ./bin/install-mecab-ipadic-neologd -n -y
 
+# neologdn
+RUN source /root/venv/bin/activate && \
+    pip install wheel && \
+    pip install neologdn
+
 # Juman
 
 # sentencepiece

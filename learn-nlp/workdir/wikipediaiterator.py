@@ -1,5 +1,8 @@
 import codecs
+import re
 import MeCab
+import neologdn
+
 
 class WikipediaIterator:
     def __init__(self, files):
@@ -24,9 +27,11 @@ class WikipediaIterator:
                     elif line == "\n":
                         continue
                     else:
-                        for sentense in line.strip("\n").split("。")[:-1]:
-                            s = self.m.parse(sentense).strip("\n") \
-                                .split(" ")[:-1]
+                        for s in line.strip("\n").split("。")[:-1]:
+                            s = neologdn.normalize(s)
+                            s = re.sub(r'[!-/:-@[-`{-~]', r' ', s)
+                            s = re.sub(u'[■-♯]', ' ', s)
+                            s = self.m.parse(s).strip("\n").split(" ")[:-1]
                             yield s
 
 
@@ -43,5 +48,5 @@ if __name__ == "__main__":
     doc = WikipediaIterator(files)
 
     for token in doc:
-        print(token)
+        input(token)
 
