@@ -28,10 +28,17 @@ class WikipediaIterator:
                         continue
                     else:
                         for s in line.strip("\n").split("。")[:-1]:
+                            # Regarding text normalization, see the below link:
+                            # https://ohke.hateblo.jp/entry/2019/02/09/141500
                             s = neologdn.normalize(s)
                             s = re.sub(r'[!-/:-@[-`{-~]', r' ', s)
                             s = re.sub(u'[■-♯]', ' ', s)
+                            s = re.sub(r'\d+', '0', s)
+
+                            # Split sentense into tokens
                             s = self.m.parse(s).strip("\n").split(" ")[:-1]
+                            
+                            # Return a list of tokens
                             yield s
 
 
