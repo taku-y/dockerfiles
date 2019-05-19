@@ -10,4 +10,5 @@ docker run -it --rm \
     --volume ${dir_libtorch}:/root/libtorch \
     --volume ${dir_tch_rs}:/root/tch-rs \
     --volume ${dir_tch_rs_data}:/root/data \
+    -p 8890:8890 \
     --name learn-pp-rust learn-pp-rust

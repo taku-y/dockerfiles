@@ -59,6 +59,18 @@ ENV LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
 # tch-rs, libtorch binding for Rust
 ENV LD_LIBRARY_PATH=/root/libtorch/lib:$LD_LIBRARY_PATH
 
+# Python
+RUN add-apt-repository ppa:jonathonf/python-3.6
+RUN apt-get update
+RUN apt-get install -y python3.6 python3.6-dev
+RUN wget https://bootstrap.pypa.io/get-pip.py
+RUN python3.6 get-pip.py
+RUN pip3 install jupyter numpy matplotlib seaborn
+RUN pip3 install ruamel.yaml
+
+# tmux
+RUN apt-get install -y tmux
+
 ENV PATH=/root/.cargo/bin:$PATH
 ENV USER=root
 WORKDIR /root
