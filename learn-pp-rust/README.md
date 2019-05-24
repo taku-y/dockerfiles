@@ -1,6 +1,6 @@
 # Docker for learn-pp-rust
 
-## Setup primitiv-rust
+## Run example of Bayesian linear regression
 0. Clone github repositories
 ```bash
 $ mkdir -p ~/git/github/primitiv
