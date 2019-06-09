@@ -71,6 +71,11 @@ RUN pip3 install ruamel.yaml
 # tmux
 RUN apt-get install -y tmux
 
+# EvCxR
+RUN apt install -y libzmq3-dev
+RUN /root/.cargo/bin/cargo install evcxr_jupyter
+RUN /root/.cargo/bin/evcxr_jupyter --install
+
 ENV PATH=/root/.cargo/bin:$PATH
 ENV USER=root
 WORKDIR /root
