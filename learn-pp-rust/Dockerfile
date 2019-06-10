@@ -60,13 +60,21 @@ ENV LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
 ENV LD_LIBRARY_PATH=/root/libtorch/lib:$LD_LIBRARY_PATH
 
 # Python
-RUN add-apt-repository ppa:jonathonf/python-3.6
-RUN apt-get update
-RUN apt-get install -y python3.6 python3.6-dev
+RUN apt-get install -y libsqlite3-dev
+RUN mkdir -p /tmp/Python37
+WORKDIR /tmp/Python37
+RUN wget https://www.python.org/ftp/python/3.7.0/Python-3.7.0.tar.xz
+RUN tar xvf Python-3.7.0.tar.xz
+RUN cd /tmp/Python37/Python-3.7.0 && \
+    ./configure --enable-optimizations && \
+    make altinstall
 RUN wget https://bootstrap.pypa.io/get-pip.py
-RUN python3.6 get-pip.py
-RUN pip3 install jupyter numpy matplotlib seaborn
-RUN pip3 install ruamel.yaml
+RUN python3.7 get-pip.py
+
+# RUN add-apt-repository ppa:jonathonf/python-3.6
+# RUN apt-get update
+# RUN apt-get install -y python3.6 python3.6-dev
+RUN pip3 install jupyter numpy matplotlib seaborn ruamel.yaml
 
 # tmux
 RUN apt-get install -y tmux
@@ -75,6 +83,12 @@ RUN apt-get install -y tmux
 RUN apt install -y libzmq3-dev
 RUN /root/.cargo/bin/cargo install evcxr_jupyter
 RUN /root/.cargo/bin/evcxr_jupyter --install
+
+# Config for jupyter notebook
+RUN jupyter notebook --generate-config
+RUN echo "c.NotebookApp.allow_root = True" >> /root/.jupyter/jupyter_notebook_config.py
+RUN echo "c.NotebookApp.ip = '0.0.0.0'" >> /root/.jupyter/jupyter_notebook_config.py
+RUN echo "c.NotebookApp.token = ''" >> /root/.jupyter/jupyter_notebook_config.py
 
 ENV PATH=/root/.cargo/bin:$PATH
 ENV USER=root
