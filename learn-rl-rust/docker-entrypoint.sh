@@ -8,11 +8,11 @@ PASSWD=${PASSWD:-${DEFAULT_PASSWD}}
 
 unset DEFAULT_USER DEFAULT_PASSWD
 
-# Add group
-echo "GROUP_ID: $GROUP_ID"
-if [[ $GROUP_ID != "0" && ! $(getent group $GROUP) ]]; then
-    groupadd -g $GROUP_ID $GROUP
-fi
+# # Add group
+# echo "GROUP_ID: $GROUP_ID"
+# if [[ $GROUP_ID != "0" && ! $(getent group $GROUP) ]]; then
+#     groupadd -g $GROUP_ID $GROUP
+# fi
 
 # Add user
 echo "USER_ID: $USER_ID"
@@ -50,12 +50,15 @@ unset PASSWD
 
 cp /.Xresources $HOME
 
-# Jupyter
-jupyter notebook --generate-config
-sed -i "s/[\#]c.NotebookApp.ip = 'localhost'/c.NotebookApp.ip = '0.0.0.0'/g" $HOME/.jupyter/jupyter_notebook_config.py
-sed -i "s/[\#]c.NotebookApp.allow_root = False/c.NotebookApp.allow_root = True/g" $HOME/.jupyter/jupyter_notebook_config.py
-sed -i "s/[\#]c.NotebookApp.port = 8888/c.NotebookApp.port = 8891/g" $HOME/.jupyter/jupyter_notebook_config.py
-sed -i "s/[\#]c.NotebookApp.token = '<generated>'/c.NotebookApp.token = ''/g" $HOME/.jupyter/jupyter_notebook_config.py
+# rustup
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+
+# # Jupyter
+# jupyter notebook --generate-config
+# sed -i "s/[\#]c.NotebookApp.ip = 'localhost'/c.NotebookApp.ip = '0.0.0.0'/g" $HOME/.jupyter/jupyter_notebook_config.py
+# sed -i "s/[\#]c.NotebookApp.allow_root = False/c.NotebookApp.allow_root = True/g" $HOME/.jupyter/jupyter_notebook_config.py
+# sed -i "s/[\#]c.NotebookApp.port = 8888/c.NotebookApp.port = 8891/g" $HOME/.jupyter/jupyter_notebook_config.py
+# sed -i "s/[\#]c.NotebookApp.token = '<generated>'/c.NotebookApp.token = ''/g" $HOME/.jupyter/jupyter_notebook_config.py
 
 echo "#############################"
 exec "$@"
