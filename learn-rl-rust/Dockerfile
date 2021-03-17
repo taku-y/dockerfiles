@@ -74,7 +74,7 @@ RUN { \
 
 RUN apt update && \
     apt install -y vim iputils-ping bash build-essential libssl-dev libffi-dev git curl \
-        libxml2-dev libxslt1-dev zlib1g-dev ca-certificates libjpeg-dev && \
+        libxml2-dev libxslt1-dev zlib1g-dev ca-certificates libjpeg-dev cmake && \
     rm -rf /var/lib/apt/lists
 
 RUN apt-get update && \
