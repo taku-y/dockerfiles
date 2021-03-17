@@ -2,6 +2,7 @@ FROM nvidia/cuda:10.2-cudnn7-devel-ubuntu18.04
 
 ARG USER_ID
 ARG GROUP_ID
+ARG GROUP
 ARG PASSWD
 ENV USER ubuntu
 # ENV GROUP ${GROUP:-${USER}}
@@ -81,19 +82,17 @@ RUN apt update && \
                    build-essential \
                    git \
                    curl \
-                   ca-certificates \
-                   python3 \
-                   python3-pip && \
+                   ca-certificates && \
     rm -rf /var/lib/apt/lists
 
-RUN python3 -m pip install --no-cache-dir --upgrade pip
-# RUN python3 -m pip install --no-cache-dir --upgrade pip && \
-    # python3 -m pip install --no-cache-dir # torch mkl
-
-# RUN git clone https://github.com/NVIDIA/apex
-# RUN cd apex && \
-#     python3 setup.py install && \
-#     pip install -v --no-cache-dir --global-option="--cpp_ext" --global-option="--cuda_ext" ./
+RUN apt-get update && \
+    apt-get install -y software-properties-common
+RUN add-apt-repository ppa:deadsnakes/ppa && \
+    apt-get update && \
+    apt-get install -y python3.9 python3.9-venv python3.9-dev
+RUN curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && \
+    python3.9 get-pip.py
+RUN pip3 install gym[atari]
 
 # hidpi
 COPY .Xresources /
@@ -103,6 +102,10 @@ RUN chmod 777 /.Xresources
 # RUN pip install tqdm
 
 RUN echo $(id -u)
+
+# Add group
+RUN groupadd -g $GROUP_ID $GROUP
+
 
 # Add user
 ENV HOME /home/$USER
