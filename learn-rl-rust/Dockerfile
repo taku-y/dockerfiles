@@ -6,25 +6,27 @@ ARG PASSWD
 ENV USER ubuntu
 # ENV GROUP ${GROUP:-${USER}}
 
-RUN echo 'path-include=/usr/share/locale/ja/LC_MESSAGES/*.mo' > /etc/dpkg/dpkg.cfg.d/includes \
-    && apt-get update \
+RUN apt-get update && apt-get install -y wget
+
+RUN apt-get update \
     && DEBIAN_FRONTEND=noninteractive apt-get install -y \
       sudo \
       lxde \
       xrdp \
       ibus \
-      ibus-mozc \
-      language-pack-ja-base \
-      language-pack-ja \
       fonts-noto-cjk \
       fonts-noto-color-emoji \
       supervisor \
       gosu \
+      libssl-dev \
     && apt-get clean \
     && rm -rf /var/cache/apt/archives/* \
     && rm -rf /var/lib/apt/lists/*
 
 # # Set locale
+# echo 'path-include=/usr/share/locale/ja/LC_MESSAGES/*.mo' > /etc/dpkg/dpkg.cfg.d/includes \
+#   language-pack-ja-base \
+#   language-pack-ja \
 # RUN cp /usr/share/zoneinfo/Asia/Tokyo /etc/localtime \
 #     && echo 'Asia/Tokyo' > /etc/timezone
 # RUN locale-gen ja_JP.UTF-8 \
@@ -115,8 +117,20 @@ RUN sudo cp /.Xresources $HOME
 RUN echo ${USER}:${PASSWD} | sudo chpasswd
 
 USER ubuntu
+
+# Rustup
 RUN cd ${HOME} && curl https://sh.rustup.rs -sSf | sh -s -- -y
 
+# libtorch
+# RUN cd ${HOME} && wget https://download.pytorch.org/libtorch/cu110/libtorch-cxx11-abi-shared-with-deps-1.7.1%2Bcu110.zip
+# RUN cd ${HOME} && unzip libtorch-cxx11-abi-shared-with-deps-1.7.1+cu110.zip
+RUN cd ${HOME} && wget https://download.pytorch.org/libtorch/cu102/libtorch-cxx11-abi-shared-with-deps-1.7.1.zip
+RUN cd ${HOME} && unzip libtorch-cxx11-abi-shared-with-deps-1.7.1.zip
+RUN echo export LIBTORCH=/home/ubuntu/libtorch >> ~/.bashrc
+RUN echo export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/ubuntu/libtorch/lib
+
 USER root
+
+RUN apt-get update && apt-get install -y pkg-config
 
 CMD ["/usr/local/bin/_gosu", "root", "/usr/bin/supervisord", "-c", "/etc/supervisor/xrdp.conf"]
