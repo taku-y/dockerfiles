@@ -85,6 +85,11 @@ RUN add-apt-repository ppa:deadsnakes/ppa && \
     apt-get install -y python3.9 python3.9-venv python3.9-dev
 RUN curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && \
     python3.9 get-pip.py
+
+RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.6 1
+RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.9 0
+RUN update-alternatives --set python3 /usr/bin/python3.9
+
 RUN pip3 install gym[atari]
 
 # hidpi
@@ -96,9 +101,8 @@ RUN chmod 777 /.Xresources
 
 RUN echo $(id -u)
 
-# Add group
-RUN groupadd -g $GROUP_ID $GROUP
-
+# Add groupp
+RUN if [[ $GROUP_ID != "0" && ! $(getent group $GROUP) ]] ; then groupadd -g $GROUP_ID $GROUP ; fi
 
 # Add user
 ENV HOME /home/$USER
