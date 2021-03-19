@@ -11,5 +11,3 @@ RUN apt-get update && apt-get install -y lxde xrdp
 RUN groupadd -g 1000 ubuntu
 RUN useradd -d /home/ubuntu -m -s /bin/bash -u 1000 -g 1000 ubuntu
 RUN echo "ubuntu:ubuntu" | chpasswd
-
-RUN update-alternatives --set x-session-manager /usr/bin/startlxde
