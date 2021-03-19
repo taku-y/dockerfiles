@@ -72,9 +72,17 @@ RUN { \
       echo "user=xrdp"; \
     } > /etc/supervisor/xrdp.conf
 
+# vim, ping
+RUN apt update
+RUN apt install -y vim iputils-ping
+
+# pip
 RUN apt update && \
-    apt install -y vim iputils-ping bash build-essential libssl-dev libffi-dev git curl \
-        libxml2-dev libxslt1-dev zlib1g-dev ca-certificates && \
+    apt install -y bash \
+                   build-essential \
+                   git \
+                   curl \
+                   ca-certificates && \
     rm -rf /var/lib/apt/lists
 
 RUN apt-get update && \
