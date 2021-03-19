@@ -6,4 +6,7 @@ RUN apt-get update && apt-get install -y wget libssl-dev curl sudo \
 
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y lxde xrdp
+
+# RUN useradd -d ${HOME} -m -s /bin/bash -u $USER_ID -g $GROUP_ID $USER
+RUN useradd -d /home/ubuntu -m -s /bin/bash -u 1000 -g 1000 ubuntu
 RUN passwd ubuntu
