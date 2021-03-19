@@ -85,7 +85,8 @@ RUN apt update && \
                    ca-certificates && \
     rm -rf /var/lib/apt/lists
 
-RUN apt install -y vim iputils-ping bash build-essential libssl-dev libffi-dev git curl \
+RUN apt update && \
+    apt install -y vim iputils-ping bash build-essential libssl-dev libffi-dev git curl \
     libxml2-dev libxslt1-dev zlib1g-dev ca-certificates libjpeg-dev cmake
 RUN apt-get update && \
     apt-get install -y software-properties-common
