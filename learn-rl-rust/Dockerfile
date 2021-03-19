@@ -85,6 +85,8 @@ RUN apt update && \
                    ca-certificates && \
     rm -rf /var/lib/apt/lists
 
+RUN apt install -y vim iputils-ping bash build-essential libssl-dev libffi-dev git curl \
+    libxml2-dev libxslt1-dev zlib1g-dev ca-certificates libjpeg-dev cmake
 RUN apt-get update && \
     apt-get install -y software-properties-common
 RUN add-apt-repository ppa:deadsnakes/ppa && \
@@ -92,6 +94,11 @@ RUN add-apt-repository ppa:deadsnakes/ppa && \
     apt-get install -y python3.9 python3.9-venv python3.9-dev
 RUN curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && \
     python3.9 get-pip.py
+RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.6 1
+RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.9 0
+RUN update-alternatives --set python3 /usr/bin/python3.9
+
+RUN python3 -m pip install pip
 RUN pip3 install gym[atari]
 
 # hidpi
