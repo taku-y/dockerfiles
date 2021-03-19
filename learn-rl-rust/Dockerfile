@@ -4,5 +4,5 @@ RUN apt-get update && apt-get install -y wget libssl-dev curl sudo \
     vim iputils-ping bash build-essential libssl-dev libffi-dev git \
     libxml2-dev libxslt1-dev zlib1g-dev ca-certificates libjpeg-dev cmake
 
-RUN spt-get update && apt-get install lxde xrdp
+RUN apt-get update && apt-get install lxde xrdp
 RUN passwd ubuntu
