@@ -77,7 +77,7 @@ RUN apt update && \
         libxml2-dev libxslt1-dev zlib1g-dev ca-certificates libjpeg-dev cmake && \
     rm -rf /var/lib/apt/lists
 
-RUN apt-get remove --purge -y python3.6
+RUN apt-get remove -y python3.6
 RUN apt-get update && \
     apt-get install -y software-properties-common
 RUN add-apt-repository ppa:deadsnakes/ppa && \
