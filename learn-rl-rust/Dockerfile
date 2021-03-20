@@ -101,6 +101,7 @@ RUN update-alternatives --set python3 /usr/bin/python3.9
 
 RUN python3 -m pip install pip
 RUN pip3 install gym[atari]
+RUN git clone https://github.com/benelot/pybullet-gym.git && cd pybullet-gym && pip3 install -e .
 
 # hidpi
 COPY .Xresources /
@@ -139,6 +140,10 @@ RUN cd ${HOME} && wget https://download.pytorch.org/libtorch/cu102/libtorch-cxx1
 RUN cd ${HOME} && unzip libtorch-cxx11-abi-shared-with-deps-1.7.1.zip
 RUN echo export LIBTORCH=/home/ubuntu/libtorch >> ~/.bashrc
 RUN echo export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/ubuntu/libtorch/lib
+
+# .bashrc
+RUN echo "setxkbmap -layout us" >> ${HOME}/.bashrc
+RUN echo "export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/ubuntu/libtorch/lib" >> ${HOME}/.bashrc
 
 USER root
 
