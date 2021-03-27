@@ -90,6 +90,8 @@ RUN apt update && \
     libxml2-dev libxslt1-dev zlib1g-dev ca-certificates libjpeg-dev cmake
 RUN apt-get update && \
     apt-get install -y software-properties-common
+RUN apt-add-repository ppa:tista/adapta -y && apt update && apt-get install -y adapta-gtk-theme
+
 RUN add-apt-repository ppa:deadsnakes/ppa && \
     apt-get update && \
     apt-get install -y python3.9 python3.9-venv python3.9-dev
@@ -114,7 +116,6 @@ RUN echo $(id -u)
 
 # Add group
 RUN groupadd -g $GROUP_ID $GROUP
-
 
 # Add user
 ENV HOME /home/$USER
@@ -147,6 +148,6 @@ RUN echo "export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/ubuntu/libtorch/lib" >> 
 
 USER root
 
-RUN apt-get update && apt-get install -y pkg-config
+RUN apt-get update && apt-get install -y pkg-config arc-theme
 
 CMD ["/usr/local/bin/_gosu", "root", "/usr/bin/supervisord", "-c", "/etc/supervisor/xrdp.conf"]
