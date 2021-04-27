@@ -115,7 +115,7 @@ RUN chmod 777 /.Xresources
 RUN echo $(id -u)
 
 # Add group
-# RUN groupadd -g $GROUP_ID $GROUP
+RUN groupadd -g $GROUP_ID $GROUP
 
 # Add user
 ENV HOME /home/$USER
