@@ -115,7 +115,7 @@ RUN chmod 777 /.Xresources
 RUN echo $(id -u)
 
 # Add group
-RUN groupadd -g $GROUP_ID $GROUP
+# RUN groupadd -g $GROUP_ID $GROUP
 
 # Add user
 ENV HOME /home/$USER
@@ -137,8 +137,11 @@ RUN cd ${HOME} && curl https://sh.rustup.rs -sSf | sh -s -- -y
 # libtorch
 # RUN cd ${HOME} && wget https://download.pytorch.org/libtorch/cu110/libtorch-cxx11-abi-shared-with-deps-1.7.1%2Bcu110.zip
 # RUN cd ${HOME} && unzip libtorch-cxx11-abi-shared-with-deps-1.7.1+cu110.zip
-RUN cd ${HOME} && wget https://download.pytorch.org/libtorch/cu102/libtorch-cxx11-abi-shared-with-deps-1.7.1.zip
-RUN cd ${HOME} && unzip libtorch-cxx11-abi-shared-with-deps-1.7.1.zip
+# RUN cd ${HOME} && wget https://download.pytorch.org/libtorch/cu102/libtorch-cxx11-abi-shared-with-deps-1.7.1.zip
+# RUN cd ${HOME} && unzip libtorch-cxx11-abi-shared-with-deps-1.7.1.zip
+RUN cd ${HOME} && wget https://download.pytorch.org/libtorch/cu111/libtorch-cxx11-abi-shared-with-deps-1.8.1%2Bcu111.zip
+RUN cd ${HOME} && unzip libtorch-cxx11-abi-shared-with-deps-1.8.1+cu111.zip
+
 RUN echo export LIBTORCH=/home/ubuntu/libtorch >> ~/.bashrc
 RUN echo export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/ubuntu/libtorch/lib
 
