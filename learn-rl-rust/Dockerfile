@@ -153,4 +153,9 @@ USER root
 
 RUN apt-get update && apt-get install -y pkg-config arc-theme
 
+# Swig, Box2d
+RUN apt-get install -y swig
+RUN pip3 install box2d box2d-py
+RUN pip3 install gym[box2d]
+
 CMD ["/usr/local/bin/_gosu", "root", "/usr/bin/supervisord", "-c", "/etc/supervisor/xrdp.conf"]
