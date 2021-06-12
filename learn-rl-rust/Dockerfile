@@ -158,4 +158,7 @@ RUN apt-get install -y swig
 RUN pip3 install box2d box2d-py
 RUN pip3 install gym[box2d]
 
+# Tensorboard
+RUN pip3 install -y tensorboard
+
 CMD ["/usr/local/bin/_gosu", "root", "/usr/bin/supervisord", "-c", "/etc/supervisor/xrdp.conf"]
