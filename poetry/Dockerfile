@@ -67,7 +67,7 @@ RUN mkdir ~/.pyenv
 RUN git clone https://github.com/pyenv/pyenv.git ~/.pyenv
 
 # (Option)pyenvのリリースバージョンをv2.0.3に変更
-RUN cd ~/.pynev && checkout v2.0.3
+RUN cd ~/.pyenv && checkout v2.0.3
 
 # .bashrcの更新
 RUN echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.bashrc
