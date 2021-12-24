@@ -8,7 +8,7 @@ RUN apt install -y --no-install-recommends \
         dialog \
         apt-utils
 RUN DEBIAN_FRONTEND=noninteractive && \
-    apt install -y -q --no-install-recommends \
+    apt install -y -q --no-install-recommends --fix-missing \
         build-essential \
         git \
         curl \
@@ -60,3 +60,13 @@ RUN useradd -m -s /bin/bash ubuntu
 USER ubuntu
 
 # --- pyenv ---
+RUN git clone https://github.com/pyenv/pyenv.git ~/.pyenv
+
+# (Option)pyenvのリリースバージョンをv2.0.3に変更
+RUN cd ~/.pynev && checkout v2.0.3
+
+# .bashrcの更新
+RUN echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.bashrc
+RUN echo 'export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.bashrc
+RUN echo 'eval "$(pyenv init --path)"' >> ~/.bashrc
+RUN source ~/.bashrc
