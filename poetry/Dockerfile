@@ -84,7 +84,3 @@ RUN cd $HOME && \
     export PATH="$PYENV_ROOT/bin:$PATH" && \
     pyenv init --path && \
     pyenv install 3.8.6
-
-# Poetry
-FROM base
-RUN poetry config virtualenvs.create false --local
