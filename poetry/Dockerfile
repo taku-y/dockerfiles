@@ -8,6 +8,7 @@ RUN apt install -y --no-install-recommends \
         dialog \
         apt-utils
 RUN DEBIAN_FRONTEND=noninteractive && \
+    apt update && \
     apt install -y -q --no-install-recommends --fix-missing \
         build-essential \
         git \
