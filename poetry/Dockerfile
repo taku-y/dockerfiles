@@ -18,7 +18,9 @@ RUN DEBIAN_FRONTEND=noninteractive && \
         libjpeg-dev \
         libpng-dev \
         libopenblas-dev pbzip2 \
-        libcurl4-openssl-dev libssl-dev libxml2-dev \
+        libcurl4-openssl-dev libssl-dev libxml2-dev
+RUN DEBIAN_FRONTEND=noninteractive && \
+    apt install -y -q --no-install-recommends --fix-missing \
         libbz2-dev \
         libreadline-dev \
         libsqlite3-dev \
