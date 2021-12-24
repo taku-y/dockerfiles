@@ -77,5 +77,6 @@ RUN echo 'eval "$(pyenv init --path)"' >> ~/.bashrc
 # Poetry
 RUN curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python3
 
-# Python3.8.6をインストール
-RUN pyenv install 3.8.6
+# Install Python 3.8.6
+SHELL ["/bin/bash", "-c"]
+RUN source ~/.bashrc && pyenv install 3.8.6
