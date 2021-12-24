@@ -63,6 +63,7 @@ RUN useradd -m -s /bin/bash ubuntu
 USER ubuntu
 
 # --- pyenv ---
+RUN mkdir ~/.pyenv
 RUN git clone https://github.com/pyenv/pyenv.git ~/.pyenv
 
 # (Option)pyenvのリリースバージョンをv2.0.3に変更
