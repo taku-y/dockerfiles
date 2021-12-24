@@ -79,4 +79,8 @@ RUN curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poet
 
 # Install Python 3.8.6
 SHELL ["/bin/bash", "-c"]
-RUN source ~/.bashrc && pyenv install 3.8.6
+RUN cd $HOME && \
+    export PYENV_ROOT="$HOME/.pyenv" && \
+    export PATH="$PYENV_ROOT/bin:$PATH" && \
+    pyenv init --path && \
+    pyenv install 3.8.6
