@@ -73,3 +73,9 @@ RUN cd ~/.pyenv && git checkout v2.0.3
 RUN echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.bashrc
 RUN echo 'export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.bashrc
 RUN echo 'eval "$(pyenv init --path)"' >> ~/.bashrc
+
+# Python3.8.6をインストール
+RUN pyenv install 3.8.6
+
+# Poetry
+RUN curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python3
