@@ -1,1 +1,1 @@
-password: aaaaaa
+password for vnc: password (see docker-entrypoint.sh)
