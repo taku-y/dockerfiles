@@ -65,31 +65,6 @@ USER ubuntu
 RUN mkdir /home/ubuntu/.vnc
 RUN cp /tmp/.Xresources /home/ubuntu/.Xresources
 
-# pyenv
-RUN git clone https://github.com/pyenv/pyenv.git ~/.pyenv
-RUN echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.bashrc
-RUN echo 'export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.bashrc
-RUN echo 'eval "$(pyenv init --path)"' >> ~/.bashrc
-RUN chmod 700 ~/.bashrc
-ENV PATH=/home/ubuntu/.pyenv/bin:$PATH
-RUN pyenv install 3.10.0
-RUN pyenv global 3.10.0
-RUN eval "$(pyenv init --path)" && pip install --upgrade pip
-
-# gym
-RUN eval "$(pyenv init --path)" && pip install gym[all]
-RUN eval "$(pyenv init --path)" && pip install gym[accept-rom-license]
-
-# ipython
-RUN eval "$(pyenv init --path)" && pip install ipython
-
-# pybullet-gym
-RUN eval "$(pyenv init --path)" && \
-    cd ~/ && \
-    git clone https://github.com/benelot/pybullet-gym.git && \
-    cd pybullet-gym && \
-    pip install -e .
-
 # rustup
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 
@@ -101,5 +76,47 @@ RUN cd /home/ubuntu/torch && \
     unzip libtorch-cxx11-abi-shared-with-deps-1.9.0+cu111.zip
 RUN echo "export LIBTORCH=/home/ubuntu/torch/libtorch" >> ~/.bashrc
 RUN echo "export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/ubuntu/torch/libtorch/lib" >> ~/.bashrc
+
+# pip
+USER root
+RUN apt install -y python3-pip
+RUN python3 -m pip install --upgrade pip
+USER ubuntu
+
+# gym, ipython
+RUN pip install gym[all]
+RUN pip install gym[accept-rom-license]
+RUN pip install ipython
+
+# pybullet-gym
+RUN cd ~/ && \
+    git clone https://github.com/benelot/pybullet-gym.git && \
+    cd pybullet-gym && \
+    pip install -e .
+
+# # pyenv
+# RUN git clone https://github.com/pyenv/pyenv.git ~/.pyenv
+# RUN echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.bashrc
+# RUN echo 'export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.bashrc
+# RUN echo 'eval "$(pyenv init --path)"' >> ~/.bashrc
+# RUN chmod 700 ~/.bashrc
+# ENV PATH=/home/ubuntu/.pyenv/bin:$PATH
+# RUN pyenv install 3.10.0
+# RUN pyenv global 3.10.0
+# RUN eval "$(pyenv init --path)" && pip install --upgrade pip
+
+# # gym
+# RUN eval "$(pyenv init --path)" && pip install gym[all]
+# RUN eval "$(pyenv init --path)" && pip install gym[accept-rom-license]
+
+# # ipython
+# RUN eval "$(pyenv init --path)" && pip install ipython
+
+# # pybullet-gym
+# RUN eval "$(pyenv init --path)" && \
+#     cd ~/ && \
+#     git clone https://github.com/benelot/pybullet-gym.git && \
+#     cd pybullet-gym && \
+#     pip install -e .
 
 ENTRYPOINT ["sh", "/tmp/docker-entrypoint.sh"]
