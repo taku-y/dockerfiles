@@ -1,21 +1,27 @@
-FROM ubuntu:20.04
+FROM dorowu/ubuntu-desktop-lxde-vnc:focal-arm64
 
-# https://kamino.hatenablog.com/entry/docker_vnc#sec2
-RUN apt update
-RUN DEBIAN_FRONTEND=noninteractive apt install -y lxde
-RUN apt install -y tigervnc-standalone-server tigervnc-common
-RUN apt install -y novnc websockify
+ENV DEBIAN_FRONTEND noninteractive
+RUN echo "Set disable_coredump false" >> /etc/sudo.conf
+RUN apt-get update -q && \
+    apt-get upgrade -yq && \
+    apt-get install -yq wget curl git build-essential vim sudo && \
+    rm -rf /var/lib/apt/lists/*
 
-COPY .Xresources /tmp/.Xresources
-COPY docker-entrypoint.sh /tmp
-RUN chmod 777 /tmp/.*
-RUN chmod 777 /tmp/docker-entrypoint.sh
+# lsb-release locales bash-completion tzdata gosu && \
+# RUN rm -rf /var/lib/apt/lists/*
 
-# User
-RUN useradd -m -s /bin/bash ubuntu
+RUN useradd --create-home --home-dir /home/ubuntu --shell /bin/bash --user-group --groups adm,sudo ubuntu && \
+    echo ubuntu:ubuntu | chpasswd && \
+    echo "ubuntu ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+COPY lxterminal.conf /lxterminal.conf
+COPY desktop.conf /desktop.conf
+RUN chmod 777 /*.conf
+
 USER ubuntu
+RUN mkdir -p /home/ubuntu/.config/lxterminal && \
+    cp /lxterminal.conf /home/ubuntu/.config/lxterminal/
+RUN mkdir -p /home/ubuntu/.config/lxsession/LXDE && \
+    cp /desktop.conf /home/ubuntu/.config/lxsession/LXDE/
+USER root
 
-RUN mkdir /home/ubuntu/.vnc
-RUN cp /tmp/.Xresources /home/ubuntu/.Xresources
-
-ENTRYPOINT ["sh", "/tmp/docker-entrypoint.sh"]
+ENV USER ubuntu

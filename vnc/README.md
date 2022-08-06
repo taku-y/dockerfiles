@@ -1,1 +1,3 @@
-password for vnc: password (see docker-entrypoint.sh)
+sh build.sh
+sh run.sh
+password: ubuntu
