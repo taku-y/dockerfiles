@@ -35,8 +35,17 @@ RUN apt install -y cmake
 # headers required for building libtorch
 RUN apt install -y libgoogle-glog-dev libgflags-dev
 
+# llvm, mesa for robosuite
+RUN apt install -y llvm libosmesa6-dev
+
+# Used for Mujoco
+RUN apt install -y patchelf libglfw3 libglfw3-dev
+
 # Cleanup
 RUN rm -rf /var/lib/apt/lists/*
+
+COPY test_mujoco_py.py /test_mujoco_py.py
+RUN chmod 777 /test_mujoco_py.py
 
 # Add user
 RUN useradd --create-home --home-dir /home/ubuntu --shell /bin/bash --user-group --groups adm,sudo ubuntu && \
@@ -63,9 +72,25 @@ RUN pip3 install torch==1.9.0
 RUN pip3 install ipython jupyterlab
 RUN pip3 install numpy==1.18.0
 RUN pip3 install gym[box2d]==0.25.1
+RUN pip3 install robosuite==1.3.2
+RUN pip3 install -U 'mujoco-py<2.2,>=2.1'
 
 # border
 RUN cd $HOME && git clone https://github.com/taku-y/border.git
+
+# Mujoco
+RUN cd $HOME && \
+    mkdir .mujoco && \
+    cd .mujoco && \
+    wget https://github.com/deepmind/mujoco/releases/download/2.1.1/mujoco-2.1.1-linux-aarch64.tar.gz
+RUN cd $HOME/.mujoco && \
+    tar zxf mujoco-2.1.1-linux-aarch64.tar.gz && \
+    mkdir -p mujoco210/bin && \
+    ln -sf $PWD/mujoco-2.1.1/lib/libmujoco.so.2.1.1 $PWD/mujoco210/bin/libmujoco210.so && \
+    ln -sf $PWD/mujoco-2.1.1/lib/libglewosmesa.so $PWD/mujoco210/bin/libglewosmesa.so && \
+    ln -sf $PWD/mujoco-2.1.1/include/ $PWD/mujoco210/include && \
+    ln -sf $PWD/mujoco-2.1.1/model/ $PWD/mujoco210/model
+RUN cp /test_mujoco_py.py $HOME
 
 # .bashrc
 RUN echo "export LIBTORCH=$HOME/.local/lib/python3.8/site-packages/torch" >> ~/.bashrc
@@ -73,6 +98,7 @@ RUN echo "export LD_LIBRARY_PATH=$HOME/.local/lib/python3.8/site-packages/torch/
 RUN echo "export LIBTORCH_CXX11_ABI=0" >> ~/.bashrc
 RUN echo 'export PATH=$HOME/.local/bin:$PATH' >> ~/.bashrc
 RUN echo 'export PYTHONPATH=$HOME/border/border-py-gym-env/examples:$PYTHONPATH' >> ~/.bashrc
+RUN echo "export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/.mujoco/mujoco210/bin" >> ~/.bashrc
 
 USER root
 ENV USER ubuntu
