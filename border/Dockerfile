@@ -78,7 +78,7 @@ RUN pip3 install -U 'mujoco-py<2.2,>=2.1'
 # border
 RUN cd $HOME && git clone https://github.com/taku-y/border.git
 
-# Mujoco
+# Mujoco aarch64 binary
 RUN cd $HOME && \
     mkdir .mujoco && \
     cd .mujoco && \
