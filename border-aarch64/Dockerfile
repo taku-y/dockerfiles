@@ -70,7 +70,7 @@ RUN pip3 install --upgrade pip
 RUN pip3 install pyyaml typing-extensions
 RUN pip3 install torch==1.9.0
 RUN pip3 install ipython jupyterlab
-RUN pip3 install numpy==1.18.0
+RUN pip3 install numpy==1.21.3
 RUN pip3 install gym[box2d]==0.25.1
 RUN pip3 install robosuite==1.3.2
 RUN pip3 install -U 'mujoco-py<2.2,>=2.1'
@@ -93,12 +93,12 @@ RUN cd $HOME/.mujoco && \
 RUN cp /test_mujoco_py.py $HOME
 
 # .bashrc
-RUN echo "export LIBTORCH=$HOME/.local/lib/python3.8/site-packages/torch" >> ~/.bashrc
-RUN echo "export LD_LIBRARY_PATH=$HOME/.local/lib/python3.8/site-packages/torch/lib" >> ~/.bashrc
-RUN echo "export LIBTORCH_CXX11_ABI=0" >> ~/.bashrc
+RUN echo 'export LIBTORCH=$HOME/.local/lib/python3.8/site-packages/torch' >> ~/.bashrc
+RUN echo 'export LD_LIBRARY_PATH=$LIBTORCH/lib' >> ~/.bashrc
+RUN echo 'export LIBTORCH_CXX11_ABI=0' >> ~/.bashrc
 RUN echo 'export PATH=$HOME/.local/bin:$PATH' >> ~/.bashrc
 RUN echo 'export PYTHONPATH=$HOME/border/border-py-gym-env/examples:$PYTHONPATH' >> ~/.bashrc
-RUN echo "export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/.mujoco/mujoco210/bin" >> ~/.bashrc
+RUN echo 'export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/.mujoco/mujoco210/bin' >> ~/.bashrc
 
 USER root
 ENV USER ubuntu

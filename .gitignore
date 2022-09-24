@@ -6,3 +6,4 @@
 *.vscode
 sftp-config.json
 sftp.json
+.DS_store
